@@ -14,14 +14,14 @@ public class UserController {
 
     private final UserService userService;
     @Autowired
-    public UserController(UserService userServiceImp) {
-        this.userService = userServiceImp;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
 
     @GetMapping()
     public String getAllUsers(Model model) {
-        model.addAttribute("users", userService.listUsers());
+        model.addAttribute("users", userService.findAll());
         return "users";
     }
 
@@ -32,25 +32,25 @@ public class UserController {
 
     @PostMapping()
     public String addNewUser(@ModelAttribute("user") User user) {
-        userService.add(user);
+        userService.save(user);
         return "redirect:/users";
     }
 
     @GetMapping("/{id}")
     public String deleteUser(@PathVariable int id) {
-        userService.deleteById(id);
+        userService.delete(id);
         return "redirect:/users";
     }
 
     @GetMapping("/edit/{id}")
     public String editUserForm(Model model, @PathVariable int id) {
-        model.addAttribute("user", userService.showUser(id));
+        model.addAttribute("user", userService.findOne(id));
         return "edit";
     }
 
     @PostMapping("/{id}")
     public String updateUser(@PathVariable int id, @ModelAttribute("user") User user) {
-        userService.updateUser(user, id);
+        userService.update(id, user);
         return "redirect:/users";
     }
 }
